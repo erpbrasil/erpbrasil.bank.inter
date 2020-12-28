@@ -16,11 +16,11 @@ class BoletoInter:
             if hasattr(obj, key):
                 obj.__dict__[key] = value
 
-    def __init__(self, sender, amount_in_cents, payer, issue_date, due_date,
+    def __init__(self, sender, amount, payer, issue_date, due_date,
                  identifier, instructions=None, mora=None, multa=None,
                  discount1=None, discount2=None, discount3=None):
         self._sender = sender
-        self._amount_in_cents = amount_in_cents
+        self._amount = amount
         self._payer = payer
         self._issue_date = issue_date.strftime("%Y-%m-%d")
         self._due_date = due_date.strftime("%Y-%m-%d")
@@ -81,7 +81,7 @@ class BoletoInter:
             desconto1=self.discount1,
             desconto2=self.discount2,
             desconto3=self.discount3,
-            valorNominal=self._amount_in_cents,
+            valorNominal=self._amount,
             valorAbatimento=0,
             multa=self.multa,
             mora=self.mora,
