@@ -99,6 +99,17 @@ class ApiInter(object):
         )
         return result.content and result.json() or result.ok
 
+    def boleto_recupera(self, nosso_numero):
+
+        _url = f'{self._api}/{nosso_numero}'
+
+        result = self._call(
+            requests.get,
+            url=_url,
+            )
+            
+        return result.content and result.json() or result.ok
+
     def boleto_baixa(self, nosso_numero, codigo_baixa):
         """ POST
         https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos/
