@@ -35,26 +35,31 @@ class ApiInter(object):
     def _prepare_headers(self):
         return {
             'content-type': 'application/json',
-            'x-inter-conta-corrente': self.conta_corrente,
+            'x-inter-conta-corrente': self.conta_corrente
         }
 
     def _call(self, http_request, url, params=None, data=None, **kwargs):
+        debug1 = self._prepare_headers()
+        debug2 = json.dumps(data or {})
+        debug3 = params or {}
         response = http_request(
             url,
             headers=self._prepare_headers(),
             params=params or {},
             data=json.dumps(data or {}),
             cert=self._cert,
-            verify=False,
+            verify=True,
             **kwargs
         )
         if response.status_code > 299:
-            error = response.json()
-            message = '%s - Código %s' % (
-                response.status_code,
-                error.get('error-code')
-            )
-            raise Exception(message)
+            #error = response.json()
+            error = response#.json()
+            #message = '%s - Código %s' % (
+            #    response.status_code,
+            #    error.get('error-code')
+            #)
+            #raise Exception(message)
+            raise Exception([str(response.text), response.status_code, debug1, debug2, debug3 ])
         return response
 
     def boleto_inclui(self, boleto):
