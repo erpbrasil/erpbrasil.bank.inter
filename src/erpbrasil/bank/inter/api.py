@@ -71,8 +71,8 @@ class ApiInter(object):
         )
         return result.content and result.json() or result.ok
 
-    def boleto_consulta(self, filtrar_por='TODOS', data_inicial=None, data_final=None,
-                        ordenar_por='NOSSONUMERO'):
+    def boleto_consulta(self, filtrar_por='TODOS', data_inicial=None, data_final=None,ordenar_por='NOSSONUMERO', page=0):
+
         """ GET
         https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos?
             filtrarPor=TODOS&
@@ -93,7 +93,8 @@ class ApiInter(object):
                 filtrarPor=filtrar_por,
                 dataInicial=data_inicial,
                 dataFinal=data_final,
-                ordenarPor=ordenar_por
+                ordenarPor=ordenar_por,
+                page=page
             )
         )
         return result.content and result.json() or result.ok
