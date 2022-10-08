@@ -19,15 +19,15 @@ class Auth:
         self.client_id = client_id
         self.client_secret = client_secret
 
-    def generate_token_boleto_write(self, scope):
+    def generate_token_boleto_write(self, scope, cert):
         request_body = (
             "client_id={0}&client_secret={1}&scope={2}&grant_type={3}".format(
                 self.client_id, self.client_secret, scope, self.grant_type
             )
         )
-        cert_file_path = os.environ.get("certificado_inter_cert")
-        key_file_path = os.environ.get("certificado_inter_key")
-        cert = (cert_file_path, key_file_path)
+        #cert_file_path = os.environ.get("certificado_inter_cert")
+        #key_file_path = os.environ.get("certificado_inter_key")
+        #cert = (cert_file_path, key_file_path)
         response = requests.post(
             "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
             headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -36,15 +36,15 @@ class Auth:
         )
         self.token_boleto_write = response.json().get("access_token")
 
-    def generate_token_boleto_read(self, scope):
+    def generate_token_boleto_read(self, scope, cert):
         request_body = (
             "client_id={0}&client_secret={1}&scope={2}&grant_type={3}".format(
                 self.client_id, self.client_secret, scope, self.grant_type
             )
         )
-        cert_file_path = os.environ.get("certificado_inter_cert")
-        key_file_path = os.environ.get("certificado_inter_key")
-        cert = (cert_file_path, key_file_path)
+        #cert_file_path = os.environ.get("certificado_inter_cert")
+        #key_file_path = os.environ.get("certificado_inter_key")
+        #cert = (cert_file_path, key_file_path)
         response = requests.post(
             "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
             headers={"Content-Type": "application/x-www-form-urlencoded"},

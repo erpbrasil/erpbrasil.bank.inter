@@ -41,8 +41,8 @@ class ApiInter(object):
             clientSecret,
             # "0a0275ff-4fcc-4f7f-a092-edcbb5bb6bd8",
         )
-        self.auth.generate_token_boleto_write("boleto-cobranca.write")
-        self.auth.generate_token_boleto_read("boleto-cobranca.read")
+        self.auth.generate_token_boleto_write("boleto-cobranca.write", cert)
+        self.auth.generate_token_boleto_read("boleto-cobranca.read", cert)
 
     def _prepare_headers(self, token):
         return {
