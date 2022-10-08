@@ -25,7 +25,7 @@ def read(*names, **kwargs):
 
 setup(
     name='erpbrasil.bank.inter',
-    version='0.0.1',
+    version='0.2.0',
     license='MIT',
     description='Integração com o Banco Inter em Python',
     long_description='%s\n%s' % (

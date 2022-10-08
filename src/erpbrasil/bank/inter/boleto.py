@@ -6,7 +6,7 @@
 
 
 class BoletoInter:
-    """ Implementa a Api do BancoInter """
+    """Implementa a Api do BancoInter"""
 
     @classmethod
     def convert_to(cls, obj, **kwargs):
@@ -16,9 +16,21 @@ class BoletoInter:
             if hasattr(obj, key):
                 obj.__dict__[key] = value
 
-    def __init__(self, sender, amount, payer, issue_date, due_date,
-                 identifier, instructions=None, mora=None, multa=None,
-                 discount1=None, discount2=None, discount3=None):
+    def __init__(
+        self,
+        sender,
+        amount,
+        payer,
+        issue_date,
+        due_date,
+        identifier,
+        instructions=None,
+        mora=None,
+        multa=None,
+        discount1=None,
+        discount2=None,
+        discount3=None,
+    ):
         self._sender = sender
         self._amount = amount
         self._payer = payer
@@ -27,38 +39,21 @@ class BoletoInter:
         self._identifier = identifier
         self._instructions = instructions or []
 
-        self.mora = mora or dict(
-            codigoMora="ISENTO",
-            valor=0,
-            taxa=0
-        )
-        self.multa = multa or dict(
-            codigoMulta="NAOTEMMULTA",
-            valor=0,
-            taxa=0
-        )
+        self.mora = mora or dict(codigoMora="ISENTO", valor=0, taxa=0)
+        self.multa = multa or dict(codigoMulta="NAOTEMMULTA", valor=0, taxa=0)
         self.discount1 = discount1 or dict(
-            codigoDesconto="NAOTEMDESCONTO",
-            taxa=0,
-            valor=0,
-            data=""
+            codigoDesconto="NAOTEMDESCONTO", taxa=0, valor=0, data=""
         )
         self.discount2 = discount2 or dict(
-            codigoDesconto="NAOTEMDESCONTO",
-            taxa=0,
-            valor=0,
-            data=""
+            codigoDesconto="NAOTEMDESCONTO", taxa=0, valor=0, data=""
         )
         self.discount3 = discount3 or dict(
-            codigoDesconto="NAOTEMDESCONTO",
-            taxa=0,
-            valor=0,
-            data=""
+            codigoDesconto="NAOTEMDESCONTO", taxa=0, valor=0, data=""
         )
 
     def _emissao_data(self):
         pagador = dict(
-            cnpjCpf=self._payer.identifier,
+            cpfCnpj=self._payer.identifier,
             nome=self._payer.name,
             email=self._payer.email,
             telefone=self._payer.phone[2:],
@@ -86,12 +81,11 @@ class BoletoInter:
             multa=self.multa,
             mora=self.mora,
             cnpjCPFBeneficiario=self._sender.identifier,
-            numDiasAgenda="SESSENTA"
+            numDiasAgenda="60",
         )
 
         if self._instructions:
-            data['mensagem'] = dict(
-                {'linha{}'.format(k + 1): v for (k, v) in enumerate(
-                    self._instructions)}
+            data["mensagem"] = dict(
+                {"linha{}".format(k + 1): v for (k, v) in enumerate(self._instructions)}
             )
         return data

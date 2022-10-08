@@ -64,7 +64,7 @@ default_context:
     test_runner:               'pytest'
     travis:                    'yes'
     travis_osx:                'no'
-    version:                   '0.0.1'
+    version:                   '0.2.0'
     website:                   'https://www.kmee.com.br'
     year_from:                 '2020'
     year_to:                   '2020'
