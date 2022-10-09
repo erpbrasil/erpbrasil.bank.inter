@@ -32,8 +32,8 @@ class ApiInter(object):
     # _api = 'https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos'
     _api = "https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/"
 
-    def __init__(self, cert, conta_corrente, clientId, clientSecret):
-        self._cert = cert
+    def __init__(self, conj_cert, conta_corrente, clientId, clientSecret):
+        self._cert = conj_cert
         self.conta_corrente = conta_corrente
         self.auth = Auth(
             clientId,
@@ -41,8 +41,8 @@ class ApiInter(object):
             clientSecret,
             # "0a0275ff-4fcc-4f7f-a092-edcbb5bb6bd8",
         )
-        self.auth.generate_token_boleto_write("boleto-cobranca.write", cert)
-        self.auth.generate_token_boleto_read("boleto-cobranca.read", cert)
+        self.auth.generate_token_boleto_write("boleto-cobranca.write", self._cert)
+        self.auth.generate_token_boleto_read("boleto-cobranca.read", self._cert)
 
     def _prepare_headers(self, token):
         return {
