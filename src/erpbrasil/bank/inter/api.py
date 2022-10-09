@@ -112,7 +112,7 @@ class ApiInter(object):
 
     def boleto_recupera(self, nosso_numero):
 
-        _url = f"{self._api}/{nosso_numero}"
+        _url = f"{self._api}{nosso_numero}"
 
         result = self._call(
             self.auth.token_boleto_read,
