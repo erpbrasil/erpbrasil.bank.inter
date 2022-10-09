@@ -32,8 +32,8 @@ class ApiInter(object):
     # _api = 'https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos'
     _api = "https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/"
 
-    def __init__(self, conj_cert, conta_corrente, clientId, clientSecret):
-        self._cert = conj_cert
+    def __init__(self, cert, conta_corrente, clientId, clientSecret):
+        self._cert = cert
         self.conta_corrente = conta_corrente
         self.auth = Auth(
             clientId,
