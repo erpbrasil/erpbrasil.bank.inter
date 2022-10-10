@@ -37,6 +37,7 @@ class Auth:
 
         if response.status_code != 200:
             print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
+            self.token_boleto_write = json.loads(response.text)
         else:
            self.token_boleto_write = response.json().get("access_token")
 
@@ -59,5 +60,6 @@ class Auth:
         )
         if response.status_code != 200:
             print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
+            self.token_boleto_read = json.loads(response.text)
         else:
-           self.token_boleto_write = response.json().get("access_token")
+           self.token_boleto_read = response.json().get("access_token")
