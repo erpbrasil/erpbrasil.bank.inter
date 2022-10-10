@@ -32,7 +32,7 @@ class BoletoInter:
         discount3=None,
     ):
         self._sender = sender
-        self._amount = amount
+        self._amount = round(amount,2)
         self._payer = payer
         self._issue_date = issue_date.strftime("%Y-%m-%d")
         self._due_date = due_date.strftime("%Y-%m-%d")
