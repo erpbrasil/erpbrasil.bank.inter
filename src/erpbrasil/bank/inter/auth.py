@@ -34,7 +34,13 @@ class Auth:
             data=request_body,
             cert=cert,
         )
-        self.token_boleto_write = response.json().get("access_token")
+
+        if response.status_code != 200:
+            print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
+        else:
+           self.token_boleto_write = response.json().get("access_token")
+
+
 
     def generate_token_boleto_read(self, scope, cert):
         request_body = (
@@ -51,4 +57,7 @@ class Auth:
             data=request_body,
             cert=cert,
         )
-        self.token_boleto_read = response.json().get("access_token")
+        if response.status_code != 200:
+            print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
+        else:
+           self.token_boleto_write = response.json().get("access_token")
