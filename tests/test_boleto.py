@@ -22,6 +22,11 @@ class TestBancoApiInter(unittest.TestCase):
             clientId="50acb448-5107-4f57-81ea-54a615c5da0a",
             clientSecret="0a0275ff-4fcc-4f7f-a092-edcbb5bb6bd8",
         )
+        print("env vars")
+        print(os.environ.get("INTER_TOKEN_BOLETO_WRITE"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_READ"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_READ_LAST_UPDATE"))
         self.dados = []
 
         myself = User(
@@ -54,7 +59,7 @@ class TestBancoApiInter(unittest.TestCase):
             )
             slip = BoletoInter(
                 sender=myself,
-                amount="100.00",
+                amount=100.001,
                 payer=payer,
                 issue_date=now,
                 due_date=now,
@@ -101,7 +106,6 @@ class TestBancoApiInter(unittest.TestCase):
                 motivoCancelamento="SUBSTITUICAO",
             )
             self.assertTrue(resposta, "Falha ao Baixar boletos")
-
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestBancoApiInter)
 

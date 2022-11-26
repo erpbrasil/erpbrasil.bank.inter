@@ -1,6 +1,8 @@
 import os
 import json
 import requests
+import time
+
 
 
 class Auth:
@@ -25,27 +27,30 @@ class Auth:
                 self.client_id, self.client_secret, scope, self.grant_type
             )
         )
-        #cert_file_path = os.environ.get("certificado_inter_cert")
-        #key_file_path = os.environ.get("certificado_inter_key")
-        #cert = (cert_file_path, key_file_path)
-        response = requests.post(
-            "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data=request_body,
-            cert=cert,
-        )
+        if os.environ.get('INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE') is None:
+            os.environ['INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE'] = str(0)
+        if float(os.environ.get('INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE')) + 3600 < time.time():
+            #cert_file_path = os.environ.get("certificado_inter_cert")
+            #key_file_path = os.environ.get("certificado_inter_key")
+            #cert = (cert_file_path, key_file_path)
+            response = requests.post(
+                "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data=request_body,
+                cert=cert,
+            )
 
-        if response.status_code != 200:
-            print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
-            raise Exception(
-                ["Server didn't return an 'OK' response.  Content was: {!r}".format(response.content),
-                str(response.text), response.status_code]
-                )
-            self.token_boleto_write = json.loads(response.text)
-        else:
-           self.token_boleto_write = response.json().get("access_token")
-
-
+            if response.status_code != 200:
+                print("Server didn't return an 'OK' response.  Content was: {!r}".format(response.content))
+                raise Exception(
+                    ["Server didn't return an 'OK' response.  Content was: {!r}".format(response.content),
+                    str(response.text), response.status_code]
+                    )
+                self.token_boleto_write = json.loads(response.text)
+            else:
+               os.environ['INTER_TOKEN_BOLETO_WRITE'] = response.json().get("access_token")
+               os.environ['INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE'] = str(time.time())
+        self.token_boleto_write = os.environ.get('INTER_TOKEN_BOLETO_WRITE')
 
     def generate_token_boleto_read(self, scope, cert):
         request_body = (
@@ -53,20 +58,25 @@ class Auth:
                 self.client_id, self.client_secret, scope, self.grant_type
             )
         )
-        #cert_file_path = os.environ.get("certificado_inter_cert")
-        #key_file_path = os.environ.get("certificado_inter_key")
-        #cert = (cert_file_path, key_file_path)
-        response = requests.post(
-            "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
-            data=request_body,
-            cert=cert,
-        )
-        if response.status_code != 200:
-            raise Exception(
-                ["Server didn't return an 'OK' response.  Content was: {!r}".format(response.content),
-                str(response.text), response.status_code]
-                )
-            self.token_boleto_read = json.loads(response.text)
-        else:
-           self.token_boleto_read = response.json().get("access_token")
+        if os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE') is None:
+            os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(0)
+        if float(os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE')) + 3600 < time.now():
+            #cert_file_path = os.environ.get("certificado_inter_cert")
+            #key_file_path = os.environ.get("certificado_inter_key")
+            #cert = (cert_file_path, key_file_path)
+            response = requests.post(
+                "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
+                headers={"Content-Type": "application/x-www-form-urlencoded"},
+                data=request_body,
+                cert=cert,
+            )
+            if response.status_code != 200:
+                raise Exception(
+                    ["Server didn't return an 'OK' response.  Content was: {!r}".format(response.content),
+                    str(response.text), response.status_code]
+                    )
+                self.token_boleto_read = json.loads(response.text)
+            else:
+               os.environ['INTER_TOKEN_BOLETO_READ'] = response.json().get("access_token")
+               os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(time.now())
+        self.token_boleto_read =  os.environ.get('INTER_TOKEN_BOLETO_READ')
