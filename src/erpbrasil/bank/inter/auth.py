@@ -30,9 +30,6 @@ class Auth:
         if os.environ.get('INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE') is None:
             os.environ['INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE'] = str(0)
         if float(os.environ.get('INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE')) + 3600 < time.time():
-            #cert_file_path = os.environ.get("certificado_inter_cert")
-            #key_file_path = os.environ.get("certificado_inter_key")
-            #cert = (cert_file_path, key_file_path)
             response = requests.post(
                 "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -61,9 +58,6 @@ class Auth:
         if os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE') is None:
             os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(0)
         if float(os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE')) + 3600 < time.now():
-            #cert_file_path = os.environ.get("certificado_inter_cert")
-            #key_file_path = os.environ.get("certificado_inter_key")
-            #cert = (cert_file_path, key_file_path)
             response = requests.post(
                 "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
@@ -79,4 +73,4 @@ class Auth:
             else:
                os.environ['INTER_TOKEN_BOLETO_READ'] = response.json().get("access_token")
                os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(time.now())
-        self.token_boleto_read =  os.environ.get('INTER_TOKEN_BOLETO_READ')
+        self.token_boleto_read = os.environ.get('INTER_TOKEN_BOLETO_READ')
