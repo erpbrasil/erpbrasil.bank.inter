@@ -1,33 +1,43 @@
 # -*- coding: utf-8 -*-
 import os
-from datetime import datetime
 import unittest
-from erpbrasil.bank.inter.boleto import BoletoInter
+from datetime import datetime
+
+from febraban.cnab240.user import User
+from febraban.cnab240.user import UserAddress
+from febraban.cnab240.user import UserBank
+
 from erpbrasil.bank.inter.api import ApiInter
-from febraban.cnab240.user import User, UserAddress, UserBank
+from erpbrasil.bank.inter.boleto import BoletoInter
 
 
 class TestBancoApiInter(unittest.TestCase):
-
     def setUp(self):
-        certificado_cert = os.environ.get('certificado_inter_cert')
-        certificado_key = os.environ.get('certificado_inter_key')
-
+        certificado_cert = os.environ.get("certificado_inter_cert")
+        certificado_key = os.environ.get("certificado_inter_key")
+        print(ApiInter._api)
         self.api = ApiInter(
             cert=(certificado_cert, certificado_key),
-            conta_corrente='14054310'
+            conta_corrente="10869106",
+            clientId="50acb448-5107-4f57-81ea-54a615c5da0a",
+            clientSecret="0a0275ff-4fcc-4f7f-a092-edcbb5bb6bd8",
         )
+        print("env vars")
+        print(os.environ.get("INTER_TOKEN_BOLETO_WRITE"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_WRITE_LAST_UPDATE"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_READ"))
+        print(os.environ.get("INTER_TOKEN_BOLETO_READ_LAST_UPDATE"))
         self.dados = []
 
         myself = User(
-            name='KMEE INFORMATICA LTDA',
-            identifier='23130935000198',
+            name="KMEE INFORMATICA LTDA",
+            identifier="23130935000198",
             bank=UserBank(
                 bankId="341",
                 branchCode="1234",
                 accountNumber="33333",
                 accountVerifier="4",
-                bankName="BANCO ITAU SA"
+                bankName="BANCO ITAU SA",
             ),
         )
         now = datetime.now()
@@ -45,21 +55,21 @@ class TestBancoApiInter(unittest.TestCase):
                     stateCode="SP",
                     zipCode="31327130",
                     streetNumber="15",
-                )
+                ),
             )
             slip = BoletoInter(
                 sender=myself,
-                amount_in_cents="100.00",
+                amount=100.001,
                 payer=payer,
                 issue_date=now,
                 due_date=now,
                 identifier="456" + str(i),
                 instructions=[
-                    'TESTE 1',
-                    'TESTE 2',
-                    'TESTE 3',
-                    'TESTE 4',
-                ]
+                    "TESTE 1",
+                    "TESTE 2",
+                    "TESTE 3",
+                    "TESTE 4",
+                ],
             )
             self.dados.append(slip)
 
@@ -70,36 +80,34 @@ class TestBancoApiInter(unittest.TestCase):
     def test_boleto_api(self):
         for item in self.dados:
             resposta = self.api.boleto_inclui(item._emissao_data())
-            item.nosso_numero = resposta['nossoNumero']
-            item.seu_numero = resposta['seuNumero']
-            item.linha_digitavel = resposta['linhaDigitavel']
-            item.barcode = resposta['codigoBarras']
+            item.nosso_numero = resposta["nossoNumero"]
+            item.seu_numero = resposta["seuNumero"]
+            item.linha_digitavel = resposta["linhaDigitavel"]
+            item.barcode = resposta["codigoBarras"]
 
             self.assertListEqual(
                 list(resposta.keys()),
-                ['seuNumero', 'nossoNumero', 'codigoBarras', 'linhaDigitavel'],
-                'Erro ao registrar boleto'
+                ["seuNumero", "nossoNumero", "codigoBarras", "linhaDigitavel"],
+                "Erro ao registrar boleto",
             )
 
         resposta = self.api.boleto_consulta(
-            data_inicial='2020-01-01', data_final='2020-12-01',
-            ordenar_por='SEUNUMERO'
+            data_inicial="2020-01-01", data_final="2020-12-01", ordenar_por="SEUNUMERO"
         )
-        self.assertTrue(resposta, 'Falha ao consultar boletos')
+        self.assertTrue(resposta, "Falha ao consultar boletos")
 
         for item in self.dados:
             resposta = self.api.boleto_pdf(nosso_numero=item.nosso_numero)
-            self.assertTrue(resposta, 'Falha ao imprimir boleto')
+            self.assertTrue(resposta, "Falha ao imprimir boleto")
 
         for item in self.dados:
             resposta = self.api.boleto_baixa(
-                nosso_numero=item.nosso_numero,
-                codigo_baixa='SUBISTITUICAO',
+                nossoNumero=item.nosso_numero,
+                motivoCancelamento="SUBSTITUICAO",
             )
-            self.assertTrue(resposta, 'Falha ao Baixar boletos')
-
+            self.assertTrue(resposta, "Falha ao Baixar boletos")
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestBancoApiInter)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
