@@ -57,7 +57,7 @@ class Auth:
         )
         if os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE') is None:
             os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(0)
-        if float(os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE')) + 3600 < time.now():
+        if float(os.environ.get('INTER_TOKEN_BOLETO_READ_LAST_UPDATE')) + 3600 < time.time():
             response = requests.post(
                 "https://cdpj.partners.bancointer.com.br/oauth/v2/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
