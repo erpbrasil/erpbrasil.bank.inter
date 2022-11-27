@@ -72,5 +72,5 @@ class Auth:
                 self.token_boleto_read = json.loads(response.text)
             else:
                os.environ['INTER_TOKEN_BOLETO_READ'] = response.json().get("access_token")
-               os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(time.now())
+               os.environ['INTER_TOKEN_BOLETO_READ_LAST_UPDATE'] = str(time.time())
         self.token_boleto_read = os.environ.get('INTER_TOKEN_BOLETO_READ')
