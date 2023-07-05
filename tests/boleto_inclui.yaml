@@ -1,0 +1,60 @@
+interactions:
+- request:
+    body: '{"pagador": {"cpfCnpj": "26103754097", "nome": "Sacado Teste", "email":
+      "mileo@kmee.com.br", "telefone": "988763663", "cep": "31327130", "numero": "15",
+      "complemento": "", "bairro": "CENTRO", "cidade": "SAO PAULO", "uf": "SP", "endereco":
+      "Rua dos TESTES", "ddd": "35", "tipoPessoa": "FISICA"}, "dataEmissao": "2023-06-27",
+      "seuNumero": "4560", "dataLimite": "SESSENTA", "dataVencimento": "2023-07-05",
+      "desconto1": {"codigoDesconto": "NAOTEMDESCONTO", "taxa": 0, "valor": 0, "data":
+      ""}, "desconto2": {"codigoDesconto": "NAOTEMDESCONTO", "taxa": 0, "valor": 0,
+      "data": ""}, "desconto3": {"codigoDesconto": "NAOTEMDESCONTO", "taxa": 0, "valor":
+      0, "data": ""}, "valorNominal": 3, "valorAbatimento": 0, "multa": {"codigoMulta":
+      "NAOTEMMULTA", "valor": 0, "taxa": 0}, "mora": {"codigoMora": "ISENTO", "valor":
+      0, "taxa": 0}, "cnpjCPFBeneficiario": "23130935000198", "numDiasAgenda": "60",
+      "mensagem": {"linha1": "TESTE 1", "linha2": "TESTE 2", "linha3": "TESTE 3",
+      "linha4": "TESTE 4"}}'
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Authorization:
+      - Bearer 7769de56-cfe2-4ae0-8a1f-c0933b587d3c
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '984'
+      Content-type:
+      - application/json
+      User-Agent:
+      - python-requests/2.25.1
+      x-inter-conta-corrente:
+      - '14054310'
+    method: POST
+    uri: https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos
+  response:
+    body:
+      string: '{"seuNumero":"4560","nossoNumero":"01034585562","codigoBarras":"07791940200000003000001112015373201034585562","linhaDigitavel":"07790001161201537320710345855620194020000000300"}'
+    headers:
+      Content-Length:
+      - '177'
+      Content-Type:
+      - application/json
+      Date:
+      - Wed, 5 Jul 2023 16:19:31 GMT
+      Server:
+      - istio-envoy
+      X-Envoy-Upstream-Service-Time:
+      - '551'
+      X-Rate-Limit-Remaining:
+      - '119'
+      X-Rate-Limit-Time:
+      - '1688574030704'
+      X-Request-Id:
+      - 5ced4d26-d3d1-42f7-ac9c-5fa22c3def1e
+      X-Upstream-Time:
+      - '556'
+    status:
+      code: 200
+      message: OK
+version: 1
