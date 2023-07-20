@@ -53,7 +53,7 @@ class ApiInter(object):
         )
         if not response.text:
             print("Sem resposta do serviço de OAuth.")
-            exit(1)
+            return
         # Isola o access_token do JSON recebido
         access_token = response.json().get("access_token")
         if not access_token:
