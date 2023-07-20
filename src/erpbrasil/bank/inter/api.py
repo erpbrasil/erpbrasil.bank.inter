@@ -52,13 +52,12 @@ class ApiInter(object):
             timeout=(10)
         )
         if not response.text:
-            print("Sem resposta do serviço de OAuth, provavelmente estourou o limite de chamadas por minuto...")
+            print("Sem resposta do serviço de OAuth.")
             exit(1)
         # Isola o access_token do JSON recebido
         access_token = response.json().get("access_token")
         if not access_token:
-            print("Não foi possível obter o access_token do JSON de resposta.")
-            exit(1)
+            return
         TOKEN = access_token
         return TOKEN
 
