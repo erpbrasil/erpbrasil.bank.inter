@@ -86,7 +86,7 @@ class BoletoInter:
             multa=self.multa,
             mora=self.mora,
             cnpjCPFBeneficiario=self._sender.identifier,
-            numDiasAgenda="SESSENTA"
+            numDiasAgenda="60"
         )
 
         if self._instructions:

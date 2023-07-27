@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import requests
+from datetime import datetime
 
 FILTRAR_POR = [
     'TODOS',
@@ -26,16 +27,55 @@ ORDENAR_CONSULTA_POR = [
 class ApiInter(object):
     """ Implementa a Api do Inter"""
 
-    _api = 'https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos'
+    _api = 'https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos'
+    data_do_ultimo_token = None
+    token = None
 
-    def __init__(self, cert, conta_corrente):
+    def __init__(self, cert, conta_corrente, client_id, client_secret):
         self._cert = cert
         self.conta_corrente = conta_corrente
+        self._client_id = client_id
+        self._client_secret = client_secret
+
+    def _prepare_token(self):
+        URL_OAUTH = "https://cdpj.partners.bancointer.com.br/oauth/v2/token"
+        D1 = "client_id={}".format(self._client_id)
+        D2 = "client_secret={}".format(self._client_secret)
+        D3 = "scope=boleto-cobranca.read boleto-cobranca.write"
+        D4 = "grant_type=client_credentials"
+        DADOS = f"{D1}&{D2}&{D3}&{D4}"
+        response = requests.post(
+            URL_OAUTH,
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=DADOS,
+            cert=self._cert,
+            timeout=(10)
+        )
+        if not response.text:
+            print("Sem resposta do serviço de OAuth.")
+            return
+        # Isola o access_token do JSON recebido
+        access_token = response.json().get("access_token")
+        if not access_token:
+            return
+        TOKEN = access_token
+        return TOKEN
+
 
     def _prepare_headers(self):
+        if self.token is not None:
+            tempo_token = (datetime.now() - self.data_do_ultimo_token).total_seconds()
+            if tempo_token > 3600:
+                new_token = self._prepare_token()
+                self.data_do_ultimo_token = datetime.now()
+                self.token = new_token
+        else:
+            self.token = self._prepare_token()
+            self.data_do_ultimo_token = datetime.now()
         return {
-            'content-type': 'application/json',
-            'x-inter-conta-corrente': self.conta_corrente,
+            "Authorization": "Bearer " + self.token,
+            "Content-type": "application/json",
+            "x-inter-conta-corrente": self.conta_corrente,
         }
 
     def _call(self, http_request, url, params=None, data=None, **kwargs):
@@ -43,23 +83,22 @@ class ApiInter(object):
             url,
             headers=self._prepare_headers(),
             params=params or {},
-            data=json.dumps(data or {}),
+            data=data,
             cert=self._cert,
-            verify=False,
+            verify=True,
             **kwargs
         )
         if response.status_code > 299:
-            error = response.json()
             message = '%s - Código %s' % (
                 response.status_code,
-                error.get('error-code')
+                response.text,
             )
             raise Exception(message)
         return response
 
     def boleto_inclui(self, boleto):
         """ POST
-        https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos
+        https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos
 
         :param boleto:
         :return:
@@ -71,7 +110,7 @@ class ApiInter(object):
         )
         return result.content and result.json() or result.ok
 
-    def boleto_consulta(self, filtrar_por='TODOS', data_inicial=None, data_final=None,
+    def boleto_consulta(self, filtrar_data_por='VENCIMENTO', data_inicial=None, data_final=None,
                         ordenar_por='NOSSONUMERO'):
         """ GET
         https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos?
@@ -80,7 +119,7 @@ class ApiInter(object):
             dataFinal=2020-12-01&
             ordenarPor=SEUNUMERO
 
-        :param filtrar_por:
+        :param filtrarDatapor:
         :param data_inicial:
         :param data_final:
         :param ordenar_por:
@@ -90,7 +129,7 @@ class ApiInter(object):
             requests.get,
             url=self._api,
             params=dict(
-                filtrarPor=filtrar_por,
+                filtrarDataPor=filtrar_data_por,
                 dataInicial=data_inicial,
                 dataFinal=data_final,
                 ordenarPor=ordenar_por
@@ -100,29 +139,28 @@ class ApiInter(object):
 
     def boleto_baixa(self, nosso_numero, codigo_baixa):
         """ POST
-        https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos/
-            00576501185/baixas
+        https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/
+        {nossoNumero}/cancelar
 
         :param nosso_numero:
         :return:
         """
-        url = '{}/{}/baixas'.format(
+        url = '{}/{}/cancelar'.format(
             self._api,
             nosso_numero
         )
         result = self._call(
             requests.post,
             url=url,
-            data=dict(
-                codigoBaixa=codigo_baixa,
-            )
+            data='{{"motivoCancelamento":"{}"}}'.format(codigo_baixa)
+
         )
         return result.content and result.json() or result.ok
 
     def boleto_pdf(self, nosso_numero):
         """ GET
-        https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos/
-            00595764723/pdf
+        https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/
+        {nossoNumero}/pdf
 
         :param nosso_numero:
         :return:
