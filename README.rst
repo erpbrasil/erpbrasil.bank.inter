@@ -55,9 +55,9 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.org/project/erpbrasil.bank.inter
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/erpbrasil/erpbrasil.bank.inter/v0.1.0.svg
+.. |commits-since| image:: https://img.shields.io/github/commits-since/erpbrasil/erpbrasil.bank.inter/v1.0.0.svg
     :alt: Commits since latest release
-    :target: https://github.com/erpbrasil/erpbrasil.bank.inter/compare/v0.1.0...master
+    :target: https://github.com/erpbrasil/erpbrasil.bank.inter/compare/v1.0.0...master
 
 
 
