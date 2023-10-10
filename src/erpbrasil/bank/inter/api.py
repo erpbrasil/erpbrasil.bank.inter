@@ -106,7 +106,7 @@ class ApiInter(object):
         result = self._call(
             requests.post,
             url=self._api,
-            data=boleto
+            data=json.dumps(boleto),
         )
         return result.content and result.json() or result.ok
 

@@ -57,41 +57,44 @@ class BoletoInter:
         )
 
     def _emissao_data(self):
-        pagador = dict(
-            cnpjCpf=self._payer.identifier,
-            nome=self._payer.name,
-            email=self._payer.email,
-            telefone=self._payer.phone[2:],
-            cep=self._payer.address.zipCode,
-            numero=self._payer.address.streetNumber,
-            complemento=self._payer.address.streetLine2,
-            bairro=self._payer.address.district,
-            cidade=self._payer.address.city,
-            uf=self._payer.address.stateCode,
-            endereco=self._payer.address.streetLine1,
-            ddd=self._payer.phone[:2],
-            tipoPessoa=self._payer.personType,
-        )
-        data = dict(
-            pagador=pagador,
-            dataEmissao=self._issue_date,
-            seuNumero=self._identifier,
-            dataLimite="SESSENTA",
-            dataVencimento=self._due_date,
-            desconto1=self.discount1,
-            desconto2=self.discount2,
-            desconto3=self.discount3,
-            valorNominal=self._amount,
-            valorAbatimento=0,
-            multa=self.multa,
-            mora=self.mora,
-            cnpjCPFBeneficiario=self._sender.identifier,
-            numDiasAgenda="60"
-        )
+        data = {
+            "seuNumero": self._identifier[:15],
+            "valorNominal": self._amount,
+            "dataVencimento": self._due_date,
+            "numDiasAgenda": 30,
+            "pagador": {
+                "cpfCnpj": self._payer.identifier,
+                "nome": self._payer.name,
+                # "email": self._payer.email,
+                # "telefone": self._payer.phone[2:],
+                "cep": self._payer.address.zipCode,
+                "numero": self._payer.address.streetLine2,
+                # "complemento": self._payer.address.streetLine2,
+                "bairro": self._payer.address.district,
+                "cidade": self._payer.address.city,
+                "uf": self._payer.address.stateCode,
+                "endereco": self._payer.address.streetLine1,
+                # "ddd": self._payer.phone[:2],
+                "tipoPessoa": "JURIDICA",
+            },
+            "desconto1": self.discount1,
+            "desconto2": self.discount2,
+            "desconto3": self.discount3,
+            "multa": self.multa,
+            "mora": self.mora,
+            "beneficiarioFinal": {
+                "nome": self._sender.name,
+                "cpfCnpj": self._sender.identifier,
+                "cep": self._sender.address.zipCode,
+                "endereco": self._sender.address.streetLine1,
+                "bairro": self._sender.address.district,
+                "cidade": self._sender.address.city,
+                "uf": self._sender.address.stateCode,
+                "tipoPessoa": "JURIDICA",
+            }
+        }
 
         if self._instructions:
-            data['mensagem'] = dict(
-                {'linha{}'.format(k + 1): v for (k, v) in enumerate(
-                    self._instructions)}
-            )
+            data['mensagem'] = {'linha{}'.format(k + 1): v for k, v in enumerate(self._instructions)}
+
         return data
