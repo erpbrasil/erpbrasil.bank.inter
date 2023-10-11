@@ -27,7 +27,7 @@ ORDENAR_CONSULTA_POR = [
 class ApiInter(object):
     """ Implementa a Api do Inter"""
 
-    _api = 'https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos'
+    _api = 'https://cdpj.partners.bancointer.com.br/cobranca/v2/'
     data_do_ultimo_token = None
     token = None
 
@@ -110,30 +110,18 @@ class ApiInter(object):
         )
         return result.content and result.json() or result.ok
 
-    def boleto_consulta(self, filtrar_data_por='VENCIMENTO', data_inicial=None, data_final=None,
-                        ordenar_por='NOSSONUMERO'):
-        """ GET
-        https://apis.bancointer.com.br:8443/openbanking/v1/certificado/boletos?
-            filtrarPor=TODOS&
-            dataInicial=2020-01-01&
-            dataFinal=2020-12-01&
-            ordenarPor=SEUNUMERO
-
-        :param filtrarDatapor:
-        :param data_inicial:
-        :param data_final:
-        :param ordenar_por:
-        :return:
+    def consulta_boleto_detalhado(self, nosso_numero=False):
+        """ 
+            GET https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/{nossoNumero}
         """
+        if not nosso_numero:
+            raise Exception('Nosso número não informado.')
+
+        url = self._api + 'boletos/{}'.format(nosso_numero)
+
         result = self._call(
             requests.get,
-            url=self._api,
-            params=dict(
-                filtrarDataPor=filtrar_data_por,
-                dataInicial=data_inicial,
-                dataFinal=data_final,
-                ordenarPor=ordenar_por
-            )
+            url=url,
         )
         return result.content and result.json() or result.ok
 
