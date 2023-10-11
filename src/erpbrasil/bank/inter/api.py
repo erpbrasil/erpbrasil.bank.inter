@@ -133,7 +133,7 @@ class ApiInter(object):
         :param nosso_numero:
         :return:
         """
-        url = '{}/{}/cancelar'.format(
+        url = '{}boletos/{}/cancelar'.format(
             self._api,
             nosso_numero
         )
