@@ -105,13 +105,13 @@ class ApiInter(object):
         """
         result = self._call(
             requests.post,
-            url=self._api,
+            url=self._api + "boletos",
             data=json.dumps(boleto),
         )
         return result.content and result.json() or result.ok
 
     def consulta_boleto_detalhado(self, nosso_numero=False):
-        """ 
+        """
             GET https://cdpj.partners.bancointer.com.br/cobranca/v2/boletos/{nossoNumero}
         """
         if not nosso_numero:
@@ -153,7 +153,7 @@ class ApiInter(object):
         :param nosso_numero:
         :return:
         """
-        url = '{}/{}/pdf'.format(
+        url = '{}boletos/{}/pdf'.format(
             self._api,
             nosso_numero
         )
